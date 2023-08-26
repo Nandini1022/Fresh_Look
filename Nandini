@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    header {
+      font-size: 20px;
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #D3D3D3;
+      padding: 0.5rem 0;
+    }
+    
+    nav a {
+      color: black;
+      margin: 0 1rem;
+      text-decoration: none;
+    }
+    
+    main {
+      padding: 2rem;
+    }
+    
+    #banner {
+      font-size: 40px;
+      background-color: #ADD8E6;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    #product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    
+    .product {
+      border: 2px solid #000000;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .product img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 1rem;
+    }
+    
+    #contact-form {
+      margin-top: 2rem;
+      background-color: #f4f4f4;
+      padding: 2rem;
+    }
+    
+    #contact-form h2 {
+      margin-bottom: 1rem;
+    }
+    
+    #contact-form label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    
+    #contact-form input,
+    #contact-form textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+    }
+    
+    #contact-form button {
+      background-color: #333;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      cursor: pointer;
+    }
+    
+     #backToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+        }
+
+  </style>
+  <title>Your Website</title>
+</head>
+<body>
+  <header>
+    <nav id="navbar"></nav>
+  </header>
+  <main>
+    <div id="banner"><b>Fresh 2022 Look</b></div>
+     
+    <div id="product-list"></div>
+    <label for="categorySelect">Filter by Category:</label>
+    <select id="categorySelect">
+        <option value="">All Categories</option>
+        <option value="1">Clothes</option>
+        <option value="2">Electronics</option>
+        <option value="3">Un Nuevo Nombre</option>
+        <option value="4">Shoes</option>
+        <option value="5">Others</option>
+    </select>
+    
+    <section class="product-list"></section>
+    
+    <div id="contact-form">
+      <h2>Contact Us</h2>
+      <form id="contact-form">
+        <div>
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+          <label for="message">Message:</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    <a id="contact"></a>
+  </main>
+  <button id="backToTop" onclick="scrollToTop()">Back to Top</button>
+  <script>
+    const navbar = [
+      { name: 'Home', id: 'home' },
+      { name: 'About', id: 'about' },
+      { name: 'Our Products', id: 'product', child: [
+        { name: 'Product 1', id: 'p1' },
+        { name: 'Product 2', id: 'p2' },
+        { name: 'Product 3', id: 'p3' },
+        { name: 'Product 4', id: 'p4' },
+      ] },
+      { name: 'Contact Us', id: 'contact' },
+    ];
+
+    const navbarElement = document.getElementById('navbar');
+    navbar.forEach(item => {
+      const menuItem = document.createElement('a');
+      menuItem.textContent = item.name;
+      if (item.id === 'contact') {
+        menuItem.href = `#${item.id}`;
+      } else {
+        menuItem.href = `#${item.id}`;
+      }
+      navbarElement.appendChild(menuItem);
+    });
+
+    const productListElement = document.getElementById('product-list');
+    fetch('https://api.escuelajs.co/api/v1/products')
+      .then(response => response.json())
+      .then(products => {
+        products.forEach(product => {
+          const productDiv = document.createElement('div');
+          productDiv.className = 'product';
+          productDiv.innerHTML = `
+            <h3>${product.title}</h3>
+            <p>${product.description}</p>
+            <img src="${product.images[0]}" alt="${product.title}">
+            <p>Price: $${product.price}</p>
+            <p>Category: ${product.category.name}</p>
+          `;
+          productListElement.appendChild(productDiv);
+        });
+      })
+      .catch(error => console.error('Error fetching products:', error));
+
+    const categorySelect = document.getElementById('categorySelect');
+    const productContainer = document.querySelector('.product-list');
+
+    const contactForm = document.getElementById('contact-form');
+
+    contactForm.addEventListener('submit', event => {
+      event.preventDefault();
+      // Validate and process form data
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('scroll', () => {
+      const backToTopButton = document.getElementById('backToTop');
+      if (window.scrollY > 300) {
+        backToTopButton.style.display = 'block';
+      } else {
+        backToTopButton.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
